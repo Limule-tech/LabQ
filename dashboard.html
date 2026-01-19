@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LabQuest Dashboard</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background-color: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1 { color: #333; }
+        .subject-tag { background: #e1f5fe; color: #01579b; padding: 5px 10px; border-radius: 4px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <h1>My Science Experiments</h1>
+    {% for exp in experiments %}
+    <div class="card">
+        <h2>{{ exp.title }}</h2>
+        <p><span class="subject-tag">Subject ID: {{ exp.subject_id }}</span></p>
+        <p>{{ exp.description }}</p>
+    </div>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>{{ experiment.title }} | Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-black italic">{{ experiment.title }} Simulator</h1>
+            <a href="{{ url_for('home') }}" class="text-blue-400 hover:underline flex items-center gap-2 font-medium"><span>←</span>
+
+                 Back to Home</a>
+        </div>
+
+        <div class="bg-black w-full h-[600px] rounded-3xl border-4 border-blue-500 flex items-center justify-center p-10 overflow-hidden relative">
+ {% if 'Ohm' in experiment.title %}        
+   <div class="relative w-full h-full flex flex-col items-center justify-center">
+      <div class="w-96 h-64 border-4 border-gray-600 rounded-xl relative flex items-center justify-center">
+        
+        <div class="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <div id="bulb" class="w-20 h-20 rounded-full bg-gray-800 border-2 border-white/20 transition-all duration-300"></div>
+            <span class="text-xs mt-1 text-gray-400">LOAD (L)</span>
+        </div>
+
+        <div class="absolute -left-10 top-1/2 -translate-y-1/2 w-16 h-16 bg-slate-800 border-2 border-blue-400 rounded-full flex flex-col items-center justify-center">
+            <span class="text-[10px] text-blue-400">AMMETER</span>
+            <div class="text-sm font-mono"><span id="a-val">0.00</span>A</div>
+        </div>
+
+        <div class="absolute -right-6 top-1/2 -translate-y-1/2 bg-slate-900 p-2 border-y-2 border-white">
+            <div class="w-8 h-4 border-2 border-orange-500 flex items-center justify-center text-[10px] text-orange-500">10Ω</div>
+        </div>
+
+        <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 px-4 flex flex-col items-center">
+            <div class="flex gap-1 mb-1">
+                <div class="w-1 h-6 bg-white"></div>
+                <div class="w-1 h-3 bg-white self-center"></div>
+            </div>
+            <span class="text-yellow-400 font-mono text-xl"><span id="v-val">0</span>V</span>
+        </div>
+    </div>
+
+    <div class="mt-16 space-y-2 text-center">
+        <input type="range" min="0" max="12" step="0.1" value="0" 
+               oninput="updatePhysics(this.value)" class="w-64 h-2 bg-slate-700 rounded-lg accent-yellow-400">
+        <p class="text-gray-400 text-xs italic">Adjust Voltage (V) to see Current (I) change</p>
+    </div>
+</div>
+
+ {% elif 'Titration' in experiment.title %}
+    <div class="flex items-end gap-12">
+    <div class="relative w-48 h-80 border-l-4 border-b-8 border-gray-500">
+        <div class="absolute top-10 -left-1 w-12 h-2 bg-gray-400"></div>
+        
+        <div class="absolute top-4 left-8 w-6 h-64 bg-blue-100/20 border-x border-white/30 rounded-t-full overflow-hidden">
+            <div id="burette-liquid" class="absolute bottom-0 w-full h-full bg-blue-400/40 transition-all duration-[3000ms]"></div>
+            <div class="absolute inset-0 flex flex-col justify-between p-1 opacity-30">
+                <div class="border-t border-white w-full"></div><div class="border-t border-white w-2"></div>
+                <div class="border-t border-white w-full"></div><div class="border-t border-white w-2"></div>
+                <div class="border-t border-white w-full"></div>
+            </div>
+        </div>
+
+        <button onclick="startTitration()" class="absolute bottom-16 left-6 w-10 h-10 bg-red-600 rounded-full border-2 border-white hover:rotate-90 transition-all shadow-lg active:scale-95 flex items-center justify-center text-[10px] font-bold">TAP</button>
+    </div>
+
+    <div class="flex flex-col items-center">
+        <div class="relative w-32 h-40">
+            <div id="flask-liquid" class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0 transition-all duration-[4000ms]" 
+                 style="border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 0px solid rgba(255,255,255,0.2);"></div>
+            <div class="absolute inset-0 border-b-4 border-l-2 border-r-2 border-white/40 rounded-b-xl" 
+                 style="clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);"></div>
+        </div>
+        <p class="text-pink-300 mt-4 font-mono text-sm">Indicator Solution</p>
+    </div>
+</div>
+
+ {% elif 'Cell' in experiment.title %}
+    <div class="flex flex-col items-center gap-8">
+        <div class="w-64 h-64 rounded-full border-8 border-slate-800 overflow-hidden shadow-2xl bg-black">
+            <img id="cell-img" src="https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=500" 
+                 class="w-full h-full object-cover transition-all duration-500" 
+                 style="filter: blur(10px);">
+        </div>
+        <input type="range" min="0" max="10" step="0.1" value="0" 
+               oninput="updateBiology(this.value)" class="w-48 h-2 bg-slate-700 rounded-lg accent-emerald-500">
+        <p class="text-emerald-400 text-sm font-mono">Adjust Fine Focus</p>
+    </div>
+    {% endif %}
+        </div>
+    </div>
+
+    <script>
+// CHEMISTRY LOGIC
+// CHEMISTRY LOGIC: Realistic Titration
+function startTitration() {
+    // 1. Get the elements
+    const buretteLiquid = document.getElementById('burette-liquid');
+    const flaskLiquid = document.getElementById('flask-liquid');
+
+    // 2. Animate the Burette draining (goes to 10% full)
+    buretteLiquid.style.height = "10%";
+    
+    // 3. Animate the Flask filling up
+    // We increase the "border-bottom" width to simulate height
+    flaskLiquid.style.borderBottom = "90px solid rgba(255, 20, 147, 0.7)"; // Turns Pink
+    
+    // 4. Make the flask liquid slightly wider as it rises for the conical shape
+    flaskLiquid.style.borderLeft = "55px solid transparent";
+    flaskLiquid.style.borderRight = "55px solid transparent";
+
+    // 5. Optional: Add a little "drip" effect logic here later
+    console.log("Titration sequence initiated...");
+}
+// PHYSICS LOGIC
+function updatePhysics(v) {
+    document.getElementById('v-val').innerText = v;
+    
+    // Ohm's Law Calculation (Current = Voltage / Resistance)
+    const resistance = 10;
+    const current = (v / resistance).toFixed(2);
+    document.getElementById('a-val').innerText = current;
+
+    const bulb = document.getElementById('bulb');
+    const brightness = (v / 12);
+    
+    // Visual effects
+    bulb.style.backgroundColor = `rgba(255, 255, 0, ${brightness})`;
+    bulb.style.boxShadow = `0 0 ${v * 5}px ${v * 2}px rgba(255, 255, 0, ${brightness})`;
+}
+
+// BIOLOGY LOGIC
+function updateBiology(val) {
+    const blurVal = Math.abs(5 - val); // Clear focus at value 5
+    document.getElementById('cell-img').style.filter = `blur(${blurVal}px)`;
+}
+</script>
+</body>
+</html>

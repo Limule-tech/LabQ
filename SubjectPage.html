@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject.name }} | ScienceLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="gradient-bg min-h-screen text-gray-900">
+
+    <nav class="sticky top-0 z-50 px-8 py-4 flex justify-between items-center bg-blue-900/60 backdrop-blur-lg border-b border-white/20">
+        <div class="flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-white shadow-lg">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" class="w-10 h-10 object-contain">
+            </div>
+            <a href="/" class="text-white font-black text-xl">ScienceLab</a>
+        </div>
+        <a href="{{url_for('home')}}" class="text-white border border-white/30 px-4 py-2 rounded-full hover:bg-white/10 transition">
+            ← Back to Dashboard</a>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12">
+        <header class="mb-12">
+            <h2 class="text-5xl font-black text-white tracking-tight">{{ subject.name }} Curriculum</h2>
+            <p class="text-xl text-blue-100/80 mt-2">Select an experiment to begin.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for exp in experiments %}
+            <div class="glass-card p-8 rounded-3xl bg-white/90 shadow-xl">
+                <div class="text-2xl mb-6">🔬</div>
+                <h3 class="text-2xl font-bold text-gray-800">{{ exp.title }}</h3>
+                <p class="text-gray-600 mt-4">{{ exp.description }}</p>
+                <div class="mt-8 flex flex-col gap-3">
+                    <a href="{{ url_for('launch_simulator', exp_id=exp.id) }}" class="w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-black transition shadow-lg hover: shadow-blue-500/50">
+                        Launch Simulator</a>
+                    <a href="{{ url_for('watch_video', exp_id=exp.id) }}" class="w-full text-center bg-red-50 text-red-600 py-3 rounded-xl font-bold hover:bg-red-100 transition">Watch Video Tutorial</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>

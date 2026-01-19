@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScienceLab | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="gradient-bg min-h-screen font-sans text-gray-900">
+
+    <nav class="sticky top-0 z-50 px-8 py-4 flex justify-between items-center border-b border-white/20 bg-blue-900/60 backdrop-blur-lg">
+        <div class="flex items-center gap-4">
+            <span class="text-blue-200 text-sm italic font-bold"></span>
+            <div class="p-2 rounded-xl bg-white shadow-xl">
+                <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo" class="w-12 h-12 object-contain">
+            </div>
+            <div>
+                <h1 class="text-2xl font-black text-white drop-shadow-md">ScienceLab</h1>
+                <p class="text-[11px] uppercase tracking-widest text-blue-300 font-bold">Virtual Simulator</p>
+            </div>
+        </div>
+        <div class="hidden md:flex items-center gap-10 text-white font-bold tracking-wide">
+            <a href="/" class="hover:text-blue-300 transition shadow-sm">Home</a>
+            <a href="#" class="hover:text-blue-300 transition shadow-sm">Interactive Games</a>
+            <a href="#" class="hover:text-blue-300 transition shadow-sm">Video Gallery</a>
+            <a href="#" class="hover:text-blue-300 transition shadow-sm">Curriculum</a>
+        </div>
+        <a href="{{ url_for('logout') }}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-bold text-xs transition active:scale-95">LOGOUT</a>
+    </nav>
+
+    <main class="container mx-auto px-6 py-12">
+        <header class="mb-16">
+            <h2 class="text-5xl font-black text-white tracking-tight">Welcome, Researcher! 👋</h2>
+            <p class="text-xl text-blue-100/80">Explore the wonders of the universe today.</p>
+        </header>
+
+        <section class="mb-20">
+            <h2 class="text-3xl font-bold text-white mb-8">Academic Courses</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-3xl bg-white/90 backdrop-blur-sm shadow-xl">
+                    <div class="text-3xl mb-6">🧬</div>
+                    <h3 class="text-2xl font-bold text-gray-800">BIOLOGY</h3>
+                    <p class="text-gray-600 mt-4">Explore living organisms and ecosystems.</p>
+                    <a href="{{ url_for('launch_simulator', exp_id=1) }}" class="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 transition">
+                        Enter Lab →</a>
+                </div>
+                <div class="glass-card p-8 rounded-3xl bg-white/90 backdrop-blur-sm shadow-xl">
+                    <div class="text-3xl mb-6">🧪</div>
+                    <h3 class="text-2xl font-bold text-gray-800">CHEMISTRY</h3>
+                    <p class="text-gray-600 mt-4">Master chemical reactions and structures.</p>
+                    <a href="{{ url_for('launch_simulator', exp_id=2) }}" class="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 transition">
+                        Enter Lab →</a>
+                </div>
+                <div class="glass-card p-8 rounded-3xl bg-white/90 backdrop-blur-sm shadow-xl">
+                    <div class="text-3xl mb-6">⚡</div>
+                    <h3 class="text-2xl font-bold text-gray-800">PHYSICS</h3>
+                    <p class="text-gray-600 mt-4">Discover the laws of matter and energy.</p>
+                    <a href="{{ url_for('launch_simulator', exp_id=3) }}" class="mt-6 inline-block bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 transition">
+                        Enter Lab →</a>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-3xl font-bold text-white mb-8">Multimedia Center</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for exp in experiments %}
+                <div class="bg-white p-6 rounded-3xl shadow-lg border border-white/50">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">{{ exp.title }}</h3>
+                    <p class="text-gray-500 text-ms mb-6">{{ exp.description }}</p>
+                    <div class="flex gap-3 pt-4 border-t">
+                        <a href="{{url_for('watch_video',exp_id=exp.id)}}"class="flex-1 py-2 text-center text-sm font-bold text-red-500 bg-red-50 rounded-xl hover:bg-red-500 hover:text-white transition">
+                            Watch Video Tutorial</a>
+                        <a href="{{ url_for('quiz_page', exp_id=exp.id) }}"class="flex-1 py-2 text-center text-sm font-bold text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-600 hover:text-white transition">
+                              Take Quiz</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+                    

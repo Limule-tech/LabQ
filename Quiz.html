@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LabQuest Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+<body class="bg-gradient-to-r from-blue-900 via-blue-700 to-blue-500 min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-4xl mx-auto px-4 py-10">
+    <div class="mb-10 text-center">
+        <h1 class="text-4xl font-extrabold text-white tracking-tight mb-4">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+                {{ experiment.title }}
+            </span> Knowledge Check
+        </h1>
+        <p class="text-gray-400">Test your understanding of the experiment below.</p>
+    </div>
+<form method="POST" class="space-y-8">
+    {% for q in questions %} 
+    <div class="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl mb-6">
+        <div class="flex items-start gap-4 mb-6">
+            <span class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-600/20 border border-blue-500/50 flex items-center justify-center text-blue-400 font-bold">
+                {{ loop.index }}
+            </span>
+            <h3 class="text-xl text-white font-medium pt-1">
+                {{ q.question }} 
+            </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for letter, text in [('A', q.option_a), ('B', q.option_b), ('C', q.option_c), ('D', q.option_d)] %}
+            <label class="relative flex items-center p-4 bg-white/5 border border-white/5 rounded-2xl cursor-pointer hover:bg-white/10 hover:border-blue-500 group transition-all">
+                <input type="radio" name="q_{{ q.id }}" value="{{ letter }}" class="w-5 h-5 text-blue-500 bg-slate-800 border-white/20">
+                <span class="ml-4 text-gray-300">
+                    <span class="font-bold text-blue-500 mr-1">{{ letter }}.</span> {{ text }}
+                </span>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="w-full py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all">
+        Submit Quiz
+    </button>
+</form>
+    </div>
+</body>
+</html>
